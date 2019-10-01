@@ -56,4 +56,4 @@ def test_get_current_basket_value(browser):
     page = ProductPage(browser, link)
     page.open()
     page.add_to_basket_click()
-    page.get_current_basket_value()
+    page.get_current_basket_value() 
