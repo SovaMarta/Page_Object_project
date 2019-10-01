@@ -1,4 +1,4 @@
-from .locators import ProductPageLocators
+from . import locators
 import math
 
 from selenium.common.exceptions import NoAlertPresentException
