@@ -1,43 +1,34 @@
-from pages.product_page import ProductPage
+from .locators import ProductPageLocators
+import math
+
+from selenium.common.exceptions import NoAlertPresentException
+
+from .base_page import BasePage
+from .locators import ProductPageLocators
 
 
-link = "http://selenium1py.pythonanywhere.com/catalogue/the-shellcoders-handbook_209/?promo=newYear"
+class ProductPage(BasePage):
+    def add_to_cart(self):
+        cart = self.browser.find_element(*ProductPageLocators.CART)
+        cart.click()
 
+    def should_be_item_added(self):
+        assert self.browser.find_element(*ProductPageLocators.ITEM_NAME).text == self.browser.find_element(
+            *ProductPageLocators.SHOW_ITEM_NAME).text, "Name is not the same"
 
-def test_guest_can_add_product_to_cart(browser):
-    page = ProductPage(browser, link)
-    page.open()
-    page.add_to_basket_check()
+    def should_be_same_price(self):
+        assert self.browser.find_element(*ProductPageLocators.IN_CART_PRICE).text == self.browser.find_element(
+            *ProductPageLocators.ITEM_PRICE).text, "Price is not the same"
 
-
-def test_should_be_add_to_basket_button(browser):
-    page = ProductPage(browser, link)
-    page.open()
-    page.should_be_add_to_basket_button()
-
-
-def test_should_be_message_success_add_to_basket(browser):
-    page = ProductPage(browser, link)
-    page.open()
-    page.add_to_basket_click()
-    page.should_be_message_success_add_to_basket()
-
-
-def test_should_be_product_price_add_to_basket_price(browser):
-    page = ProductPage(browser, link)
-    page.open()
-    page.should_be_product_price_add_to_basket_price()
-
-
-def test_get_product_price(browser):
-    page = ProductPage(browser, link)
-    page.open()
-    page.add_to_basket_click()
-    page.get_product_price()
-
-
-def test_get_current_basket_value(browser):
-    page = ProductPage(browser, link)
-    page.open()
-    page.add_to_basket_click()
-    page.get_current_basket_value()
+    def solve_quiz_and_get_code(self):
+        alert = self.browser.switch_to.alert
+        x = alert.text.split(" ")[2]
+        answer = str(math.log(abs((12 * math.sin(float(x))))))
+        alert.send_keys(answer)
+        alert.accept()
+        try:
+            alert = self.browser.switch_to.alert
+            print("Your code: {}".format(alert.text))
+            alert.accept()
+        except NoAlertPresentException:
+            print("No second alert presented")
