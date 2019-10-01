@@ -1,4 +1,4 @@
-from .pages import login_page
+from .pages import product_page
 from .pages.product_page import ProductPage
 
 def test_guest_can_add_product_to_cart(browser):
